@@ -1,6 +1,5 @@
 import pygame
 import random
-main = __import__(__name__.split('.')[0])
 
 colors = {
 	"empty": (212, 212, 212),
@@ -11,7 +10,9 @@ colors = {
 
 
 class Slot:
-	def __init__(self, x, y, size, on_clicked_bomb):
+	def __init__(self, x, y, size, on_clicked_bomb, win):
+		self.win = win
+		self.font = pygame.font.SysFont('Arial', 25)
 		# setting position variables
 		self.x = x
 		self.y = y
@@ -20,7 +21,7 @@ class Slot:
 		# setting data variables
 		self.is_flagged = False
 		self.is_bomb = False
-		self.type = '0'
+		self.neighbors_count = 0
 		self.update_color()
 		# setting method
 		self.on_clicked_bomb = on_clicked_bomb
@@ -59,26 +60,26 @@ class Slot:
 		mousex, mousey = pygame.mouse.get_pos()
 		click = pygame.mouse.get_pressed()
 
-		if click != (0, 0, 0):
-			if (
-				mousex >= self.rect_x and
-				mousex <= self.rect_x + self.rect_size and
-				mousey >= self.rect_y and
-				mousey <= self.rect_y + self.rect_size
-			):
-				self.handle_pressed()
+		if (
+			click != (0, 0, 0) and
+			mousex >= self.rect_x and
+			mousex <= self.rect_x + self.rect_size and
+			mousey >= self.rect_y and
+			mousey <= self.rect_y + self.rect_size
+		):
+			self.handle_pressed()
 
 	def handle_pressed(self):
 		if self.is_bomb:
 			self.on_clicked_bomb()
 
-	def show(self, win):
+	def show(self):
 		self.check_pressed()
-		is_hover = self.get_is_hover()
-		if is_hover:
+		if self.get_is_hover():
 			self.color = colors.get('hover')
 		else:
 			self.update_color()
 
-		pygame.draw.rect(win, self.color, self.rect)
+		pygame.draw.rect(self.win, self.color, self.rect)
+		self.win.blit(self.font.render('Hello!', True, (255,0,0)), (200, 100))
 		pygame.display.update()
