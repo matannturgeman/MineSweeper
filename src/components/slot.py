@@ -1,33 +1,34 @@
 import pygame
 import random
+main = __import__(__name__.split('.')[0])
 
 colors = {
 	"empty": (212, 212, 212),
 	"open": (255, 255, 255),
 	"hover": (251, 251, 251),
+	"bomb": (255, 0, 0),
 }
 
 
-class Slot():
-	def __init__(self, x, y, size):
+class Slot:
+	def __init__(self, x, y, size, on_clicked_bomb):
+		# setting position variables
 		self.x = x
 		self.y = y
 		self.size = size
 		self.offset = 5
+		# setting data variables
 		self.is_flagged = False
 		self.is_bomb = False
 		self.type = '0'
 		self.update_color()
-		
+		# setting method
+		self.on_clicked_bomb = on_clicked_bomb
+		# setting rectingle variables
 		self.rect_x = (self.x * self.size) + self.offset
 		self.rect_y = (self.y * self.size) + self.offset
 		self.rect_size = self.size - self.offset
-		self.rect = (
-			self.rect_x,
-			self.rect_y,
-			self.rect_size,
-			self.rect_size
-		)
+		self.rect = (self.rect_x, self.rect_y, self.rect_size, self.rect_size)
 
 	def __str__(self):
 		props = vars(self)
@@ -36,6 +37,9 @@ class Slot():
 	def __repr__(self):
 		props = vars(self)
 		return f'Slot Object ({props})'
+
+	def insert_bomb(self):
+		self.is_bomb = True
 
 	def get_is_hover(self):
 		Mouse_x, Mouse_y = pygame.mouse.get_pos()
@@ -46,7 +50,10 @@ class Slot():
 			return False
 
 	def update_color(self):
-		self.color = colors.get('empty')
+		if self.is_bomb:
+			self.color = colors.get('bomb')
+		else:
+			self.color = colors.get('empty')
 
 	def check_pressed(self):
 		mousex, mousey = pygame.mouse.get_pos()
@@ -54,15 +61,16 @@ class Slot():
 
 		if click != (0, 0, 0):
 			if (
-				mousex >= self.rect_x and 
-				mousex <= self.rect_x + self.rect_size and 
-				mousey >= self.rect_y and 
+				mousex >= self.rect_x and
+				mousex <= self.rect_x + self.rect_size and
+				mousey >= self.rect_y and
 				mousey <= self.rect_y + self.rect_size
 			):
 				self.handle_pressed()
-				
-	def handle_pressed(self): 
-		print('clicked')
+
+	def handle_pressed(self):
+		if self.is_bomb:
+			self.on_clicked_bomb()
 
 	def show(self, win):
 		self.check_pressed()
@@ -71,5 +79,6 @@ class Slot():
 			self.color = colors.get('hover')
 		else:
 			self.update_color()
+
 		pygame.draw.rect(win, self.color, self.rect)
 		pygame.display.update()

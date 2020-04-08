@@ -1,49 +1,46 @@
 import pygame
 import pprint
-from ..classes.slot import Slot
-pp = pprint.PrettyPrinter(depth=6)
+from .slot import Slot
+from ..services.bombService import initialize_bombs
 
-table_data = None
-rows = 5
-cols = 5
-
-# def draw_lines():
-# 	for x in range(rows):
-# 		for y in range(cols):
-
-
-def initialize_table_data(win, game_width, game_height):
-	global table_data
-	table_data = []
-	size = 100
-	center = (game_width + game_height) / 2
-	print('center', center, 'game_width', game_width, 'game_height', game_height)
-	for x in range(rows):
-		if not x in table_data:
-			table_data.append([])
-
-		for y in range(cols):
-
-			if not y in table_data[x]:
-				table_data[x].append([])
-			
-			# mid_x = int((center / 2) + x)
-			# print('mid_x:', mid_x, 'x:', x)
-			table_data[x][y] = Slot(x, y, size)
-
-	# draw_lines()
+class Game_Table:
+	def __init__(self, bombs_count, Main):
+		self.Main = Main
+		self.bombs_count = bombs_count
+		self.table_data = None
+		self.rows = 5
+		self.cols = 5
+		
+	def end_game(self):
+		self.Main.end_game()
 
 
-def print_table():
-	pp.pprint(table_data)
+	def initialize_table_data(self, win, game_width, game_height):
+		self.table_data = []
+		size = 100
+		for x in range(self.rows):
+			if not x in self.table_data:
+				self.table_data.append([])
+
+			for y in range(self.cols):
+				if not y in self.table_data[x]:
+					self.table_data[x].append([])
+
+				self.table_data[x][y] = Slot(x, y, size, on_clicked_bomb=self.end_game)
+		
+		self.table_data = initialize_bombs(self.table_data, self.bombs_count)
 
 
-def update_table(win):
-	global table_data
-	if not table_data:
-		return
+	def print_table(self):
+		pp = pprint.PrettyPrinter(depth=6)
+		pp.pprint(self.table_data)
 
-	for x in range(len(table_data)):
-		for y in range(len(table_data[x])):
-			slot = table_data[x][y]
-			slot.show(win)
+
+	def update_table(self, win):
+		if not self.table_data:
+			return
+
+		for x in range(len(self.table_data)):
+			for y in range(len(self.table_data[x])):
+				slot = self.table_data[x][y]
+				slot.show(win)
