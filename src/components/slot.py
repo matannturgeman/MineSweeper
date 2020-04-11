@@ -6,6 +6,7 @@ colors = {
 	"open": (255, 255, 255),
 	"hover": (251, 251, 251),
 	"bomb": (255, 0, 0),
+	"debug": (0, 255, 255)
 }
 
 
@@ -30,14 +31,21 @@ class Slot:
 		self.rect_y = (self.y * self.size) + self.offset
 		self.rect_size = self.size - self.offset
 		self.rect = (self.rect_x, self.rect_y, self.rect_size, self.rect_size)
+		
+		self.debug = False
 
 	def __str__(self):
-		props = vars(self)
-		return f'Slot Object ({props})'
+		# props = vars(self)
+		# return f'Slot Object ({props})'
+		return f'Slot Object (x: {self.x}, y: {self.y})'
 
 	def __repr__(self):
-		props = vars(self)
-		return f'Slot Object ({props})'
+		# props = vars(self)
+		# return f'Slot Object ({props})'
+		return f'Slot Object (x: {self.x}, y: {self.y})'
+		
+	def initiate_debug(self):
+		self.debug = True
 
 	def insert_bomb(self):
 		self.is_bomb = True
@@ -73,13 +81,32 @@ class Slot:
 		if self.is_bomb:
 			self.on_clicked_bomb()
 
+	def display_neighbors(self):
+		middle = self.size // 2 - 10
+		text_pos = (self.rect_x + middle, self.rect_y + middle)
+		txt = f'x:{self.x},y:{self.y},{self.neighbors_count}'
+		# txt = str(self.neighbors_count)
+		self.display_text(text_pos, txt, (0, 0, 0))
+
+	def display_text(self, text_pos, text, color):
+		self.win.blit(
+			self.font.render(
+				text,
+				True,
+				color
+			),
+			text_pos
+		)
+
 	def show(self):
 		self.check_pressed()
-		if self.get_is_hover():
+		if self.debug:
+			self.color = colors.get('debug')
+		elif self.get_is_hover():
 			self.color = colors.get('hover')
 		else:
 			self.update_color()
 
 		pygame.draw.rect(self.win, self.color, self.rect)
-		self.win.blit(self.font.render('Hello!', True, (255,0,0)), (200, 100))
+		self.display_neighbors()
 		pygame.display.update()
