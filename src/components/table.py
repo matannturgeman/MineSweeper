@@ -12,17 +12,16 @@ class Game_Table:
 		self.table_data = None
 		self.rows = 5
 		self.cols = 5
-		
 
 	def initialize_table_data(self, game_width, game_height):
 		self.table_data = []
 		size = 100
-		
-		for x in range(self.rows):
+
+		for x in range(self.cols):
 			if not x in self.table_data:
 				self.table_data.append([])
 
-			for y in range(self.cols):
+			for y in range(self.rows):
 				if not y in self.table_data[x]:
 					self.table_data[x].append([])
 
@@ -36,31 +35,8 @@ class Game_Table:
 				self.table_data[x][y] = new_slot
 
 		bombed_table = initialize_bombs(self.table_data, self.bombs_count)
+		# bombed_table[2][2].initiate_debug()
 		self.table_data = count_neighbors(bombed_table)
-		
-
-	# def initialize_table_data(self, game_width, game_height):
-	# 	self.table_data = []
-	# 	size = 100
-	# 	for x in range(self.rows):
-	# 		if not x in self.table_data:
-	# 			self.table_data.append([])
-
-	# 		for y in range(self.cols):
-	# 			if not y in self.table_data[x]:
-	# 				self.table_data[x].append([])
-
-	# 			new_slot = Slot(
-	# 				x=x,
-	# 				y=y,
-	# 				size=size,
-	# 				on_clicked_bomb=self.Main.end_game,
-	# 				win=self.Main.win
-	# 			)
-	# 			self.table_data[x][y] = new_slot
-
-	# 	bombed_table = initialize_bombs(self.table_data, self.bombs_count)
-	# 	self.table_data = count_neighbors(bombed_table)
 
 	def print_table(self):
 		pp = pprint.PrettyPrinter(depth=6)

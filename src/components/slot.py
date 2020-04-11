@@ -31,7 +31,7 @@ class Slot:
 		self.rect_y = (self.y * self.size) + self.offset
 		self.rect_size = self.size - self.offset
 		self.rect = (self.rect_x, self.rect_y, self.rect_size, self.rect_size)
-		
+
 		self.debug = False
 
 	def __str__(self):
@@ -43,8 +43,9 @@ class Slot:
 		# props = vars(self)
 		# return f'Slot Object ({props})'
 		return f'Slot Object (x: {self.x}, y: {self.y})'
-		
+
 	def initiate_debug(self):
+		print(f'initiate_debug at {self.x},{self.y}')
 		self.debug = True
 
 	def insert_bomb(self):
@@ -84,7 +85,8 @@ class Slot:
 	def display_neighbors(self):
 		middle = self.size // 2 - 10
 		text_pos = (self.rect_x + middle, self.rect_y + middle)
-		txt = f'x:{self.x},y:{self.y},{self.neighbors_count}'
+		txt = f'({self.x},{self.y}), {self.neighbors_count}'
+		# txt = f'x:{self.x},y:{self.y},{self.neighbors_count}'
 		# txt = str(self.neighbors_count)
 		self.display_text(text_pos, txt, (0, 0, 0))
 
