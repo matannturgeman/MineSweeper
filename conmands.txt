@@ -1,1 +1,2 @@
-start: source env/bin/activate
+install env python -m venv env
+start: env\Scripts\activate.bat
