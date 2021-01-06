@@ -79,8 +79,15 @@ class Slot:
 			self.handle_pressed()
 
 	def handle_pressed(self):
+		print('pressed')
 		if self.is_bomb:
 			self.on_clicked_bomb()
+		else:
+			self.reveal()
+
+	def reveal(self):
+		print('releaved', self)
+		print(123)
 
 	def display_neighbors(self):
 		middle = self.size // 2 - 10
@@ -111,4 +118,4 @@ class Slot:
 
 		pygame.draw.rect(self.win, self.color, self.rect)
 		self.display_neighbors()
-		pygame.display.update()
+		# pygame.display.update()

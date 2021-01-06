@@ -1,9 +1,9 @@
 import pygame
 import pprint
+import sys
 from .slot import Slot
 from ..services.bombService import initialize_bombs
 from ..services.neighborsService import count_neighbors
-
 
 class Game_Table:
 	def __init__(self, bombs_count, Main):
